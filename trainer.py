@@ -11,7 +11,7 @@ from utils import array_tool as at
 from utils.vis_tool import Visualizer
 
 from utils.config import opt
-from torchnet.meter import ConfusionMeter, AverageValueMeter
+# from torchnet.meter import ConfusionMeter, AverageValueMeter
 
 LossTuple = namedtuple('LossTuple',
                        ['rpn_loc_loss',
@@ -58,9 +58,9 @@ class FasterRCNNTrainer(nn.Module):
         self.vis = Visualizer(env=opt.env)
 
         # indicators for training status
-        self.rpn_cm = ConfusionMeter(2)
-        self.roi_cm = ConfusionMeter(21)
-        self.meters = {k: AverageValueMeter() for k in LossTuple._fields}  # average loss
+        # self.rpn_cm = ConfusionMeter(2)
+        # self.roi_cm = ConfusionMeter(21)
+        # self.meters = {k: AverageValueMeter() for k in LossTuple._fields}  # average loss
 
     def forward(self, imgs, bboxes, labels, scale):
         """Forward Faster R-CNN and calculate losses.
@@ -139,7 +139,7 @@ class FasterRCNNTrainer(nn.Module):
         rpn_cls_loss = F.cross_entropy(rpn_score, gt_rpn_label.cuda(), ignore_index=-1)
         _gt_rpn_label = gt_rpn_label[gt_rpn_label > -1]
         _rpn_score = at.tonumpy(rpn_score)[at.tonumpy(gt_rpn_label) > -1]
-        self.rpn_cm.add(at.totensor(_rpn_score, False), _gt_rpn_label.data.long())
+        # self.rpn_cm.add(at.totensor(_rpn_score, False), _gt_rpn_label.data.long())
 
         # ------------------ ROI losses (fast rcnn loss) -------------------#
         n_sample = roi_cls_loc.shape[0]
@@ -157,7 +157,7 @@ class FasterRCNNTrainer(nn.Module):
 
         roi_cls_loss = nn.CrossEntropyLoss()(roi_score, gt_roi_label.cuda())
 
-        self.roi_cm.add(at.totensor(roi_score, False), gt_roi_label.data.long())
+        # self.roi_cm.add(at.totensor(roi_score, False), gt_roi_label.data.long())
 
         losses = [rpn_loc_loss, rpn_cls_loss, roi_loc_loss, roi_cls_loss]
         losses = losses + [sum(losses)]
@@ -223,17 +223,19 @@ class FasterRCNNTrainer(nn.Module):
 
     def update_meters(self, losses):
         loss_d = {k: at.scalar(v) for k, v in losses._asdict().items()}
-        for key, meter in self.meters.items():
-            meter.add(loss_d[key])
+        # for key, meter in self.meters.items():
+        #     meter.add(loss_d[key])
 
     def reset_meters(self):
-        for key, meter in self.meters.items():
-            meter.reset()
-        self.roi_cm.reset()
-        self.rpn_cm.reset()
+        # for key, meter in self.meters.items():
+        #     meter.reset()
+        # self.roi_cm.reset()
+        # self.rpn_cm.reset()
+        pass
 
     def get_meter_data(self):
-        return {k: v.value()[0] for k, v in self.meters.items()}
+        # return {k: v.value()[0] for k, v in self.meters.items()}
+        pass
 
 
 def _smooth_l1_loss(x, t, in_weight, sigma):

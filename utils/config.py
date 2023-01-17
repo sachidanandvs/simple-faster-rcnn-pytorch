@@ -8,6 +8,10 @@ from pprint import pprint
 class Config:
     # data
     voc_data_dir = '/dataset/PASCAL2007/VOC2007/'
+    root = "../dataset/truncated/"
+    csv_file = "../dataset/truncated.csv"
+    label_idx = {"/m/0k5j":0,"/m/015p6":1,"/m/04dr76w":2,"/m/0k4j":3,"/m/01yrx":4,"/m/01mzpv":5,"/m/07bgp":6,
+                    "/m/0bt9lr":7,"/m/03k3r":8,"/m/01g317":9,"/m/03m0pdh":10,"/m/04bcr3":11,"/m/07yv9":12}
     min_size = 600  # image resize
     max_size = 1000 # image resize
     num_workers = 8
